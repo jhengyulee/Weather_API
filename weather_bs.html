@@ -24,13 +24,13 @@
     </script>
 
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css">
-    
+
 
 </head>
 
 <body>
 
-    <div class="container">
+    <div class="container-fluid">
         <div class="row">
             <div class="col-12">
 
@@ -42,66 +42,117 @@
 
     </div>
 
-    <div class="container">
-        <table  class="table table-striped">
+    <div class="container-fluid">
+        <table class="table table-striped">
             <tbody>
                 <tr>
-                    <td>ID</td>
-                    <td>縣市</td>
-                    <td>天氣狀況</td>
-                    <td>最低溫度</td>
-                    <td>最高溫度</td>
-                    <td>降雨機率</td>
+                    <th>ID</th>
+                    <th>縣市</th>
+                    <th>時間一</th>
+                    <th>時間二</th>
+                    <th>時間三</th>
                 </tr>
             </tbody>
 
         </table>
     </div>
 
-
+    
     <script src="./token/token.js"></script>
 
     <script>
-       
+        //判斷白天或晚上
+
+        const hourArr = [];
+        hourArr[0] = '凌晨';
+        hourArr[6] = '白天';
+        hourArr[12] = '下午';
+        hourArr[18] = '晚上';
+        console.log('hourArr', hourArr);
+
 
         //ajax
         $.ajax({
             dataType: 'json',
             url: dataUrl,
-            
+
             success: function (result) {
 
 
-                let data = result.records.location;
+                let data = result.records.location; //縣市
+
+
+                // 從資料中取出時間
+                const time0 = new Date(data[0].weatherElement[0].time[0].startTime);
+                const time1 = new Date(data[0].weatherElement[0].time[1].startTime);
+                const time2 = new Date(data[0].weatherElement[0].time[2].startTime);
+
+                console.log('time0', time0);
+                console.log('time1', time1);
+                console.log('time2', time2);
+
+                //取年月日時間
+                let timeText0 = `
+                    ${time0.getFullYear()} / ${time0.getMonth()+1} / ${time0.getDate()} / ${time0.getHours()}
+                `;
+                let timeText1 = `
+                    ${time1.getFullYear()} / ${time1.getMonth()+1} / ${time1.getDate()} / ${time1.getHours()}
+                `;
+                let timeText2 = `
+                    ${time2.getFullYear()} / ${time2.getMonth()+1} / ${time2.getDate()} / ${time2.getHours()}
+                `;
+
+                console.log('timeText0', timeText0);
+                console.log('timeText1', timeText1);
+                console.log('timeText2', timeText2);
+
+                //欄位的文字替換掉
+                $('tr>th').eq(2).text(timeText0); 
+                $('tr>th').eq(3).text(timeText1);
+                $('tr>th').eq(4).text(timeText2);
+
+                //判斷白天或晚上
+                const iconText0 = (time0.getHours() == 6 || time0.getHours() == 12) ? 'day' : 'night';
+                const iconText1 = (time1.getHours() == 6 || time1.getHours() == 12) ? 'day' : 'night';
+                const iconText2 = (time2.getHours() == 6 || time2.getHours() == 12) ? 'day' : 'night';
                 // Wx 天氣現象
                 // MaxT 最高溫度
                 // MinT 最低溫度
                 // CI 舒適度
                 // PoP 降雨機率
-                console.log(data[0]['weatherElement'][0].time[0].parameter.parameterName);
-                console.log(data[0]['weatherElement'][2].time[0].parameter.parameterName);
-                console.log(data[0]['weatherElement'][4].time[0].parameter.parameterName);
-                console.log(data[0]['weatherElement'][3].time[0].parameter.parameterName);
-                console.log(data[0]['weatherElement'][1].time[0].parameter.parameterName);
-                console.log(data[0]);
+                // console.log(data[0]['weatherElement'][0].time[0].parameter.parameterName);
+                // console.log(data[0]['weatherElement'][2].time[0].parameter.parameterName);
+                // console.log(data[0]['weatherElement'][4].time[0].parameter.parameterName);
+                // console.log(data[0]['weatherElement'][3].time[0].parameter.parameterName);
+                // console.log(data[0]['weatherElement'][1].time[0].parameter.parameterName);
+                // console.log(data[0]);
 
-                
-                
-                for(let i=0;i<data.length;i++){
+                for (let i = 0; i < data.length; i++) {
 
-                
+                    // 將資料插入tbody
                     $('tbody').append(
                         `
                         <tr>
-                            <td>${i}</td>  
+                            <td>${i+1}</td>  
                             <td>${data[i].locationName}</td>  
                             <td>
                                 ${data[i]['weatherElement'][0].time[0].parameter.parameterName}
-                                <img src="./img/day/${data[i]['weatherElement'][0].time[0].parameter.parameterValue}.svg" alt="">
+                                ${data[i]['weatherElement'][2].time[0].parameter.parameterName} &deg
+                                ${data[i]['weatherElement'][1].time[0].parameter.parameterName}  
+                                <img src="./img/${iconText0}/${data[i]['weatherElement'][0].time[0].parameter.parameterValue}.svg" alt="">
                             </td>  
-                            <td>${data[i]['weatherElement'][2].time[0].parameter.parameterName}</td>  
-                            <td>${data[i]['weatherElement'][4].time[0].parameter.parameterName}</td>  
-                            <td>${data[i]['weatherElement'][1].time[0].parameter.parameterName}</td>   
+                            <td>
+                                ${data[i]['weatherElement'][0].time[1].parameter.parameterName}
+                                ${data[i]['weatherElement'][2].time[1].parameter.parameterName} 
+                                ${data[i]['weatherElement'][1].time[1].parameter.parameterName}  
+                                <img src="./img/${iconText1}/${data[i]['weatherElement'][0].time[1].parameter.parameterValue}.svg" alt="">
+                            </td>  
+                            <td>
+                                ${data[i]['weatherElement'][0].time[2].parameter.parameterName}
+                                ${data[i]['weatherElement'][2].time[2].parameter.parameterName} 
+                                ${data[i]['weatherElement'][1].time[2].parameter.parameterName}  
+                                <img src="./img/${iconText2}/${data[i]['weatherElement'][0].time[2].parameter.parameterValue}.svg" alt="">
+                            </td>  
                         </tr>
                         `
                     )
@@ -109,11 +160,34 @@
                 }
 
 
+
+
+
+
+                // for(let i=0;i<data.length;i++){
+
+
+                //     $('tbody').append(
+                //         `
+                //         <tr>
+                //             <td>${i}</td>  
+                //             <td>${data[i].locationName}</td>  
+                //             <td>
+                //                 ${data[i]['weatherElement'][0].time[0].parameter.parameterName}
+                //                 <img src="./img/day/${data[i]['weatherElement'][0].time[0].parameter.parameterValue}.svg" alt="">
+                //             </td>  
+                //             <td>${data[i]['weatherElement'][2].time[0].parameter.parameterName}</td>  
+                //             <td>${data[i]['weatherElement'][1].time[0].parameter.parameterName}</td>   
+                //         </tr>
+                //         `
+                //     )
+
+                // }
+
+
             }
 
         })
-
-       
     </script>
 
 
