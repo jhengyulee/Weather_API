@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Forecast</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+        integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous">
+    </script>    slim版沒有ajax  -->  
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"
+        integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous">
+    </script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+        integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+
+</head>
+
+<body>
+
+    <table id="table_id" class="display">
+        <thead>
+            <tr>
+                <th>Column 1</th>
+                <th>Column 2</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Row 1 Data 1</td>
+                <td>Row 1 Data 2</td>
+            </tr>
+            <tr>
+                <td>Row 2 Data 1</td>
+                <td>Row 2 Data 2</td>
+            </tr>
+            <tr>
+                <td>Row 1 Data 1</td>
+                <td>Row 1 Data 2</td>
+            </tr>
+            <tr>
+                <td>Row 2 Data 1</td>
+                <td>Row 2 Data 2</td>
+            </tr>
+            <tr>
+                <td>Row 1 Data 1</td>
+                <td>Row 1 Data 2</td>
+            </tr>
+            <tr>
+                <td>Row 2 Data 1</td>
+                <td>Row 2 Data 2</td>
+            </tr>
+            <tr>
+                <td>Row 1 Data 1</td>
+                <td>Row 1 Data 2</td>
+            </tr>
+            <tr>
+                <td>Row 4 Data 1</td>
+                <td>Row 4 Data 2</td>
+            </tr>
+            <tr>
+                <td>Row 1 Data 1</td>
+                <td>Row 1 Data 2</td>
+            </tr>
+            <tr>
+                <td>Row 2 Data 1</td>
+                <td>Row 2 Data 2</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js">
+    </script> -->
+    <script>
+        //
+        // $.getJSON('./api2.php')
+        //     .done(function (res){
+        //     console.log(res);
+        //     console.log(res[0]);
+        // });
+
+
+        //domain不同
+        // localhost vs 192.168.211.3
+        // $.getJSON('http://192.168.211.3/myApi2.php')
+        //     .done(function (res){
+        //     console.log(res);
+        //     console.log(res[0]);
+        // });
+
+        //ajax
+        $.ajax({
+            dataType: 'json',
+            url: 'https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-C0032-001?Authorization=CWB-B525CAE0-8C14-480C-8437-9F1C23E26C46',
+            // data: 
+            success: function (res) {
+
+                console.log(res);
+                console.log(res.records.location);
+
+                let data = res.records.location;
+
+                $('#table_id').DataTable({
+                    data: data,
+                    columns: [{
+                            data: 'locationName',
+                            title: 'locationName'
+
+                        },
+                        {
+                            data: 'locationName',
+                            title: 'locationName'
+                        },
+
+                    ],
+                    language: {
+                        "lengthMenu": "顯示 _MENU_ 筆資料",
+                        "sProcessing": "處理中...",
+                        "sZeroRecords": "没有匹配结果",
+                        "sInfo": "目前有 _MAX_ 筆資料",
+                        "sInfoEmpty": "目前共有 0 筆紀錄",
+                        "sInfoFiltered": " ",
+                        "sInfoPostFix": "",
+                        "sSearch": "搜尋:",
+                        "sUrl": "",
+                        "sEmptyTable": "尚未有資料紀錄存在",
+                        "sLoadingRecords": "載入資料中...",
+                        "sInfoThousands": ",",
+                        "oPaginate": {
+                            "sFirst": "首頁",
+                            "sPrevious": "上一頁",
+                            "sNext": "下一頁",
+                            "sLast": "末頁"
+                        },
+                        "order": [
+                            [0, "desc"]
+                        ],
+                        "oAria": {
+                            "sSortAscending": ": 以升序排列此列",
+                            "sSortDescending": ": 以降序排列此列"
+                        }
+                    },
+                });
+            }
+        })
+
+
+
+
+
+        // $.getJSON('https://data.ntpc.gov.tw/api/datasets/71CD1490-A2DF-4198-BEF1-318479775E8A/json?page=0&size=100').done(function (res){
+        //     console.log(res);
+        // });
+    </script>
+
+
+</body>
+
+</html>
